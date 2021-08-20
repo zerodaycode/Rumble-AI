@@ -98,7 +98,7 @@ class RumbleAI:
 
         hour = datetime.datetime.now().hour
 
-        if (hour >= 6) and (hour < 13):
+        if (hour >= 6) and (hour <= 13):
             self.rumble_talk(f"Buenos días, {self.username} como puedo ayudarte?")
         elif (hour >= 14) and (hour < 21):
             self.rumble_talk(f"Buenas tardes, {self.username} como puedo ayudarte?")
