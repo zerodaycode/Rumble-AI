@@ -30,11 +30,9 @@ def sync_dependencies():
 
     pip_packages = [
         f'pip install {package}' if package != "pyaudio"
-        else "pip install .whl\\" + sorted(os.listdir(".whl"), key=lambda x: not x.__contains__("cp39"))[0]
+        else "pip install .whl\\" + sorted(os.listdir(".whl"), key = lambda x: not x.__contains__("cp39"))[0]
         for package in dependencies
     ]
 
     for package in pip_packages:
         subprocess.Popen(package)
-
-    print("Pase por aquí")

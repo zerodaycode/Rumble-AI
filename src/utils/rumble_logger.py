@@ -21,4 +21,4 @@ class Logger:
 
     @staticmethod
     def error(message):
-        print(f'{Logger.FAIL} INFO: {message} {Logger.ENDC}')
+        print(f'{Logger.FAIL} ERROR: {message} {Logger.ENDC}')

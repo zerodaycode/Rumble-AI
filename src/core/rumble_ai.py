@@ -18,7 +18,9 @@ import pyttsx3
 import pywhatkit
 import requests
 import smtplib
+
 from src.utils.rumble_logger import Logger
+from src.skills.queries_prueba import responses
 
 
 class RumbleAI:
@@ -52,7 +54,7 @@ class RumbleAI:
                         self.mic_input_device = mic_id_request
                         break
 
-                except ValueError as error:
+                except ValueError:
                     print("Por favor, introduce un número válido")
 
     def rumble_talk(self, audio):
@@ -61,21 +63,19 @@ class RumbleAI:
         self.engine.runAndWait()
 
     def rumble_listen(self):
-        # query = input() # For getting input from CLI
         r = speech_recognition.Recognizer()
 
         query = ""
 
         with speech_recognition.Microphone(device_index = self.mic_input_device) as source:
-
-            self.listening_th = threading.Thread(target = self.print_listening)
-            self.listening_th.setName('Listening Thread')
-            self.listening_th.start()
+            if self.listening_th is None:
+                self.listening_th = threading.Thread(target = self.print_listening)
+                self.listening_th.setName('Listening Thread')
+                self.listening_th.start()
 
             r.pause_threshold = 1
             try:
                 query: str = r.recognize_google(r.listen(source), language = self.language)
-
             except Exception as e:
                 Logger.error(e)
 
@@ -83,11 +83,15 @@ class RumbleAI:
 
     @staticmethod
     def print_listening():
+        counter = 1
         while True:
-            counter = -4
-            Logger.info(f'Listening... Running for {counter + 5}')
-            if counter >= 1:
-                counter + 4
+            if counter < 2:
+                Logger.info(f'Listening... Running for {counter}')
+                counter += 4
+            else:
+                Logger.info(f'Listening... Running for {counter}')
+                counter += 5
+
             ti.sleep(5)
 
     def greet(self):
@@ -95,13 +99,11 @@ class RumbleAI:
         hour = datetime.datetime.now().hour
 
         if (hour >= 6) and (hour < 13):
-            self.rumble_talk(f"Good Morning, {self.username}")
+            self.rumble_talk(f"Buenos días, {self.username} como puedo ayudarte?")
         elif (hour >= 14) and (hour < 21):
-            self.rumble_talk(f"Good afternoon, {self.username}")
+            self.rumble_talk(f"Buenas tardes, {self.username} como puedo ayudarte?")
         elif (hour >= 21) and (hour <= 5):
-            self.rumble_talk(f"Buenas tardes-noches, {self.username}")
-
-        self.rumble_talk(f'Hola, {self.username}, cómo puedo ayudarte?')
+            self.rumble_talk(f"Buenas moches, {self.username} como puedo ayudarte?")
 
     def run(self):
         """ The event loop of the APP """
@@ -116,9 +118,7 @@ class RumbleAI:
             print(f'{RumbleAI.assistant_name} ha escuchado -> ' + query)
 
             if query.__contains__("rumble"):
-            # if query.startswith("rumble"):
-                from src.skills.queries_prueba import responses
-                responses(query, self, self.listening_th)
-            else:
-                self.rumble_talk(f'Perdona, {self.username}, pero no te he entendido.')
+                responses(query, self)
+
+
 
