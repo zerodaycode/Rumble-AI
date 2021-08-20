@@ -19,8 +19,10 @@ import pywhatkit
 import requests
 import smtplib
 
+from .skills_registry import SkillsRegistry
 from src.utils.rumble_logger import Logger
 from src.skills.queries_prueba import responses
+from src.skills.info.date_time import DateTime
 
 
 class RumbleAI:
@@ -28,10 +30,18 @@ class RumbleAI:
 
     def __init__(self):
         self.username = 'Álex'
+        self.assistant_name = RumbleAI.assistant_name.lower()
+
+        self.skills = SkillsRegistry()
+
+        # Provisional
         self.engine = pyttsx3.init()
         self.mic_input_device = None
         self.language = self.lang_setup()
         self.listening_th = None
+        self.id_language = 1
+
+
 
     def lang_setup(self):
         return "es-ES"
@@ -96,7 +106,7 @@ class RumbleAI:
 
     def greet(self):
 
-        hour = datetime.datetime.now().hour
+        hour = DateTime.get_current_hour()
 
         if (hour >= 6) and (hour <= 13):
             self.rumble_talk(f"Buenos días, {self.username} como puedo ayudarte?")
@@ -104,21 +114,26 @@ class RumbleAI:
             self.rumble_talk(f"Buenas tardes, {self.username} como puedo ayudarte?")
         elif (hour >= 21) and (hour <= 5):
             self.rumble_talk(f"Buenas moches, {self.username} como puedo ayudarte?")
+        else:
+            self.rumble_talk(f"Buenas moches, {self.username} como puedo ayudarte?")
 
     def run(self):
         """ The event loop of the APP """
-
+        # print('saludo')
         self.greet()  # Before anything else...
+        # print('fin de saludo')
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
 
             # Getting input from the user
             query: str = self.rumble_listen().lower()
-            print(f'{RumbleAI.assistant_name} ha escuchado -> ' + query)
+            print(f'{self.assistant_name} ha escuchado -> ' + query)
 
-            if query.__contains__("rumble"):
-                responses(query, self)
+            if query.__contains__(self.assistant_name):
+                self.skills.match_skill( query, self.id_language )
+
+                # responses(query, self)
 
 
 
