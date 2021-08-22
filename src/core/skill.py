@@ -1,9 +1,17 @@
-class Skill:
+from abc import ABCMeta, abstractmethod
+
+
+class Skill(metaclass = ABCMeta):
     """
-    Base model class for the RumbleAI Skills
+    Base model class for any of the RumbleAI Skills
     """
 
-    def __init__(self, name, description, tags):
-        self.name: str = name
-        self.description: str = description
-        self.tags: dict = tags
+    @abstractmethod
+    def play(self) -> ():
+        """
+        Performs the designed action, based on the logic implemented for this method
+        by all the classes that subclass this one, and overrides this method
+        :return: ()
+        """
+        pass  # abstract methods do not provide implementation in Python
+

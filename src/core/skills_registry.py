@@ -1,51 +1,69 @@
 import logging
 
+# from .rumble_ai import RumbleAI
 from .skill import Skill
 from .skill_factory import SkillFactory
 
 # Rumble skills modules
-from ..skills.info.date_time import DateTime
+from ..skills.info.date import Date
+from ..skills.info.time import Time
 
 
 class SkillsRegistry:
-
     word_filter = [
-        'a', 'para', 'cabe'
+        'rumble',
+        'a', 'para', 'cabe',  # ... TODO --- Complete it
     ]
 
-    def __init__(self):
-        self._rumble_skills = rumble_skills_registry
+    def __init__(self, id_language: int):
+        # self._rumble_skills = rumble_skills_registry
+        self.id_language = id_language - 1
 
         # Here we starts our skill factory
-        skills = SkillFactory()
+        self.skill_factory = SkillFactory()
 
-        # All the availiable Rumble skills
-        skills.register_builder(
-            self._rumble_skills.get('hour'), DateTime().get_current_time())
+        # Automatize the process of register every skill on the skill's dict
+        for skill, kwargs in rumble_skills_registry.items():
+            self.skill_factory.register_builder(
+                kwargs['name'][self.id_language], skill
+            )
 
-    @staticmethod
-    def match_skill(user_query: str, id_language: int):
+    def match_skill(self, user_query: str) -> Skill:
 
-        keywords = [
-            word for word in user_query.split()
-                if word not in SkillsRegistry.word_filter
-        ]
+        # Filter no interesting words to match
+        keywords = list(
+            filter(
+                lambda word: word not in SkillsRegistry.word_filter,
+                user_query.split()
+            )
+        )
 
-        for word in keywords:
-            # logging.Logger.info('Word: ' + word)
-            rumble_skills_registry.get( word )
+        for skill_instance, skill_kwargs in rumble_skills_registry.items():
+            identifier = skill_kwargs["name"][self.id_language]
+            if identifier in keywords:
+                skill_kwargs.update({'id_language': self.id_language})
+                return self.skill_factory.get_instance(
+                    identifier, **skill_kwargs
+                )
 
 
 # A list with all the Rumble's availiable skills.
-
 rumble_skills_registry: dict = {
-    'hour': Skill(
-        'time',
-        'Retrieves info about date and/or time',
-        {
-            'english': ['time'],
-            'spanish': ['hora'],
-        }
-    ),
 
+    Time: {
+        'name': ['hour', 'hora'],
+        'description': 'Retrieves info about current time',
+        'tags': {
+            'english': ['time', 'hour'],
+            'spanish': ['hora'],
+        },
+    },
+    Date: {
+        'name': ['date', 'fecha'],
+        'description': 'Retrieves info about current date',
+        'tags': {
+            'english': ['date'],
+            'spanish': ['fecha'],
+        },
+    }
 }

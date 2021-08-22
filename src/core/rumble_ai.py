@@ -21,8 +21,6 @@ import smtplib
 
 from .skills_registry import SkillsRegistry
 from src.utils.rumble_logger import Logger
-from src.skills.queries_prueba import responses
-from src.skills.info.date_time import DateTime
 
 
 class RumbleAI:
@@ -32,19 +30,19 @@ class RumbleAI:
         self.username = 'Álex'
         self.assistant_name = RumbleAI.assistant_name.lower()
 
-        self.skills = SkillsRegistry()
-
-        # Provisional
+        # Provisional -- TODO -- class Config?
         self.engine = pyttsx3.init()
         self.mic_input_device = None
         self.language = self.lang_setup()
-        self.listening_th = None
-        self.id_language = 1
+        # self.listening_th = None
+        self.id_language = 2
 
+        # AI skills
+        self.skills = SkillsRegistry( self.id_language )
 
-
-    def lang_setup(self):
-        return "es-ES"
+    @staticmethod
+    def lang_setup():
+        return "es-ES"  # TODO Config file -- class
 
     def voice_setup(self):
         voices = self.engine.getProperty('voices')
@@ -52,6 +50,7 @@ class RumbleAI:
 
     def mic_setup(self):
         for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
+            # print(f'Audio device with name "{name}" is the device ID = {index}`')  # TODO Need all the translations
             print(f'Audio device with name "{name}" is the device ID = {index}`')
 
             while True:
@@ -78,10 +77,10 @@ class RumbleAI:
         query = ""
 
         with speech_recognition.Microphone(device_index = self.mic_input_device) as source:
-            if self.listening_th is None:
-                self.listening_th = threading.Thread(target = self.print_listening)
-                self.listening_th.setName('Listening Thread')
-                self.listening_th.start()
+            # if self.listening_th is None:
+            #     self.listening_th = threading.Thread(target = self.print_listening)
+            #     self.listening_th.setName('Listening Thread')
+            #     self.listening_th.start()
 
             r.pause_threshold = 1
             try:
@@ -106,7 +105,7 @@ class RumbleAI:
 
     def greet(self):
 
-        hour = DateTime.get_current_hour()
+        hour = datetime.datetime.now().hour
 
         if (hour >= 6) and (hour <= 13):
             self.rumble_talk(f"Buenos días, {self.username} como puedo ayudarte?")
@@ -119,9 +118,8 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
-        # print('saludo')
+
         self.greet()  # Before anything else...
-        # print('fin de saludo')
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
@@ -131,9 +129,7 @@ class RumbleAI:
             print(f'{self.assistant_name} ha escuchado -> ' + query)
 
             if query.__contains__(self.assistant_name):
-                self.skills.match_skill( query, self.id_language )
+                response = self.skills.match_skill( query )
+                print(response)
 
-                # responses(query, self)
-
-
-
+                self.rumble_talk( response.play() )
