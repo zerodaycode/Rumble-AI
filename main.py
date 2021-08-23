@@ -1,3 +1,5 @@
-if 'name' == 'main':
-    
-    import setup  # Should persist if this operation already runned once, so no need to run again.
+from src.core.rumble_ai import RumbleAI
+
+if __name__ == '__main__':
+    rumble = RumbleAI()
+    rumble.run()
