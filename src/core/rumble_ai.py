@@ -51,7 +51,7 @@ class RumbleAI:
     def mic_setup(self):
         for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
             # print(f'Audio device with name "{name}" is the device ID = {index}`')  # TODO Need all the translations
-            print(f'Audio device with name "{name}" is the device ID = {index}`')
+            print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
 
             while True:
                 mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
@@ -67,7 +67,6 @@ class RumbleAI:
                     print("Por favor, introduce un número válido")
 
     def rumble_talk(self, audio):
-        # print(f'{RumbleAI.assistant_name} ha escuchado {audio}')
         self.engine.say(audio)
         self.engine.runAndWait()
 
@@ -85,8 +84,8 @@ class RumbleAI:
             r.pause_threshold = 1
             try:
                 query: str = r.recognize_google(r.listen(source), language = self.language)
-            except Exception as e:
-                Logger.error(e)
+            except speech_recognition.UnknownValueError as e:
+                Logger.error(f'No ha sido posible reconocer el audio de entrada.\n{e}')
 
         return query
 
@@ -95,10 +94,10 @@ class RumbleAI:
         counter = 1
         while True:
             if counter < 2:
-                Logger.info(f'Listening... Running for {counter}')
+                Logger.info(f'Escuchando... Programa activo desde hace {counter} s.')
                 counter += 4
             else:
-                Logger.info(f'Listening... Running for {counter}')
+                Logger.info(f'Listening... Programa activo desde hace {counter} s.')
                 counter += 5
 
             ti.sleep(5)
@@ -108,13 +107,13 @@ class RumbleAI:
         hour = datetime.datetime.now().hour
 
         if (hour >= 6) and (hour <= 13):
-            self.rumble_talk(f"Buenos días, {self.username} como puedo ayudarte?")
+            self.rumble_talk(f"Buenos días, {self.username} cómo puedo ayudarte?")
         elif (hour >= 14) and (hour < 21):
-            self.rumble_talk(f"Buenas tardes, {self.username} como puedo ayudarte?")
+            self.rumble_talk(f"Buenas tardes, {self.username} cómo puedo ayudarte?")
         elif (hour >= 21) and (hour <= 5):
-            self.rumble_talk(f"Buenas moches, {self.username} como puedo ayudarte?")
+            self.rumble_talk(f"Buenas moches, {self.username} cómo puedo ayudarte?")
         else:
-            self.rumble_talk(f"Buenas moches, {self.username} como puedo ayudarte?")
+            self.rumble_talk(f"Buenas moches, {self.username} cómo puedo ayudarte?")
 
     def run(self):
         """ The event loop of the APP """
@@ -126,7 +125,7 @@ class RumbleAI:
 
             # Getting input from the user
             query: str = self.rumble_listen().lower()
-            print(f'{self.assistant_name} ha escuchado -> ' + query)
+            Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
 
             if query.__contains__(self.assistant_name):
                 response = self.skills.match_skill( query )
