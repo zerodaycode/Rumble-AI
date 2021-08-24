@@ -18,7 +18,7 @@ class Time(Skill):
         return self.name[self.id_language]
 
     def play(self) -> str:
-        return datetime.datetime.now().strftime("%I:%M")
+        return f'Son las {datetime.datetime.now().strftime("%I:%M")}'
 
 
 

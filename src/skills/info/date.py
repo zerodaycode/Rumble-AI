@@ -19,6 +19,6 @@ class Date(Skill):
 
     def play(self) -> str:
         return f'''
-            Hoy es el : { str(datetime.datetime.now().day) },
-            del : { str(datetime.datetime.now().month) },
-            del : { str(datetime.datetime.now().year) }'''
+            Hoy es el, { str(datetime.datetime.now().day) },
+            del, { str(datetime.datetime.now().month) },
+            del, { str(datetime.datetime.now().year) }'''
