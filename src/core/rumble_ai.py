@@ -103,23 +103,13 @@ class RumbleAI:
 
             ti.sleep(5)
 
-    def greet(self):
-
-        hour = datetime.datetime.now().hour
-
-        if (hour >= 6) and (hour <= 13):
-            self.rumble_talk(f"Buenos días, {self.username} cómo puedo ayudarte?")
-        elif (hour >= 14) and (hour < 21):
-            self.rumble_talk(f"Buenas tardes, {self.username} cómo puedo ayudarte?")
-        elif (hour >= 21) and (hour <= 5):
-            self.rumble_talk(f"Buenas moches, {self.username} cómo puedo ayudarte?")
-        else:
-            self.rumble_talk(f"Buenas moches, {self.username} cómo puedo ayudarte?")
-
     def run(self):
         """ The event loop of the APP """
 
-        self.greet()  # Before anything else...
+        self.rumble_talk(
+            self.skills.match_skill('saludar')
+                .play()
+        )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
@@ -131,8 +121,6 @@ class RumbleAI:
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
-                    print(response)
-
                     self.rumble_talk( response.play() )
 
             except KeyboardInterrupt:
