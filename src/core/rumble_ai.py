@@ -1,5 +1,6 @@
 import logging
 import subprocess
+import sys
 import threading
 
 import pyttsx3
@@ -124,11 +125,17 @@ class RumbleAI:
         while True:
 
             # Getting input from the user
-            query: str = self.rumble_listen().lower()
-            Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
+            try:
+                query: str = self.rumble_listen().lower()
+                Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
 
-            if query.__contains__(self.assistant_name):
-                response = self.skills.match_skill( query )
-                print(response)
+                if query.__contains__(self.assistant_name):
+                    response = self.skills.match_skill( query )
+                    print(response)
 
-                self.rumble_talk( response.play() )
+                    self.rumble_talk( response.play() )
+
+            except KeyboardInterrupt:
+                # Program stopped by Ctrl + C or IDE's stop button
+                Logger.warning(f'Program stopped by the user: {self.username}')
+                sys.exit()

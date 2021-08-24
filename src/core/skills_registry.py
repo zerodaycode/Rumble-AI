@@ -11,8 +11,8 @@ from ..skills.info.time import Time
 
 class SkillsRegistry:
     word_filter = [
-        'rumble',
-        'a', 'para', 'cabe',  # ... TODO --- Complete it
+        'rumble',  # ... TODO --- Complete it
+        'a', 'para', 'cabe',
     ]
 
     def __init__(self, id_language: int):
