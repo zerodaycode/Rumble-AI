@@ -5,6 +5,7 @@ from .skill import Skill
 from .skill_factory import SkillFactory
 
 # Rumble skills modules
+from ..skills.basic.greet import Greet
 from ..skills.info.date import Date
 from ..skills.info.time import Time
 
@@ -65,5 +66,16 @@ rumble_skills_registry: dict = {
             'english': ['date'],
             'spanish': ['fecha'],
         },
+    },
+    Greet: {
+        'name': ['greet', 'saludar'],
+        'description': 'Greets the user (or any one) when requested',
+        'tags': {
+            'english': ['greet'],
+            'spanish': ['saluda, saludar, saludo'],
+        },
+        'user': {
+            'username': 'Alex'
+        }
     }
 }

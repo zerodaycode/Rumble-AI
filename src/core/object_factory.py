@@ -35,8 +35,8 @@ class ObjectFactory:
 
         if builder:
             return builder(**kwargs)
-        # raise ValueError(key)
         else:
+            # raise ValueError(key)
             print(f'No key: {key} found on builders')
 
 

@@ -13,5 +13,5 @@ class Skill(metaclass = ABCMeta):
         by all the classes that subclass this one, and overrides this method
         :return: ()
         """
-        pass  # abstract methods do not provide implementation in Python
+        pass  # abstract methods does not provides an implementation in Python
 
