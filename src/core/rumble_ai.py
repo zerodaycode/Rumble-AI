@@ -67,11 +67,11 @@ class RumbleAI:
                 except ValueError:
                     print("Por favor, introduce un número válido")
 
-    def rumble_talk(self, audio):
+    def talk(self, audio):
         self.engine.say(audio)
         self.engine.runAndWait()
 
-    def rumble_listen(self):
+    def listen(self):
         r = speech_recognition.Recognizer()
 
         query = ""
@@ -106,7 +106,7 @@ class RumbleAI:
     def run(self):
         """ The event loop of the APP """
 
-        self.rumble_talk(
+        self.talk(
             self.skills.match_skill('saludar')
                 .play()
         )  # Before anything else...
@@ -116,12 +116,12 @@ class RumbleAI:
 
             # Getting input from the user
             try:
-                query: str = self.rumble_listen().lower()
+                query: str = self.listen().lower()
                 Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
-                    self.rumble_talk( response.play() )
+                    response.play( self )
 
             except KeyboardInterrupt:
                 # Program stopped by Ctrl + C or IDE's stop button

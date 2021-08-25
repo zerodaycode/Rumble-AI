@@ -17,8 +17,11 @@ class Date(Skill):
     def __str__(self):
         return self.name[self.id_language]
 
-    def play(self) -> str:
-        return f'''
-            Hoy es el, { str(datetime.datetime.now().day) },
-            del, { str(datetime.datetime.now().month) },
-            del, { str(datetime.datetime.now().year) }'''
+    def play(self, rumble) -> str:
+        return rumble.talk(
+            f'''
+                Hoy es el, { str(datetime.datetime.now().day) },
+                del, { str(datetime.datetime.now().month) },
+                del, { str(datetime.datetime.now().year) }
+            '''
+        )
