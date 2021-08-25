@@ -20,6 +20,8 @@ class ObjectFactory:
             This means a Builder can be a function, a class, or an object that implements .__call__().
         """
         self._builders[key] = builder
+        # print('BUILDERS:')
+        # print(self._builders.items())
 
     def create(self, key, **kwargs):
         """
