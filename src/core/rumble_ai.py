@@ -29,12 +29,12 @@ class RumbleAI:
 
     def __init__(self):
         self.username = 'Álex'
-        self.assistant_name = RumbleAI.assistant_name.lower()
+        self.assistant_name = RumbleAI.assistant_name.lower( )
 
         # Provisional -- TODO -- class Config?
-        self.engine = pyttsx3.init()
+        self.engine = pyttsx3.init( )
         self.mic_input_device = None
-        self.language = self.lang_setup()
+        self.language = self.lang_setup( )
         # self.listening_th = None
         self.id_language = 2
 
@@ -46,11 +46,11 @@ class RumbleAI:
         return "es-ES"  # TODO Config file -- class
 
     def voice_setup(self):
-        voices = self.engine.getProperty('voices')
-        self.engine.setProperty("voice", voices[0].id)
+        voices = self.engine.getProperty( 'voices' )
+        self.engine.setProperty( 'voice', voices[0].id )
 
     def mic_setup(self):
-        for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
+        for index, name in enumerate(speech_recognition.Microphone.list_microphone_names( )):
             # print(f'Audio device with name "{name}" is the device ID = {index}`')  # TODO Need all the translations
             print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
 
@@ -67,11 +67,11 @@ class RumbleAI:
                 except ValueError:
                     print("Por favor, introduce un número válido")
 
-    def rumble_talk(self, audio):
+    def talk(self, audio):
         self.engine.say(audio)
         self.engine.runAndWait()
 
-    def rumble_listen(self):
+    def listen(self):
         r = speech_recognition.Recognizer()
 
         query = ""
@@ -95,10 +95,10 @@ class RumbleAI:
         counter = 1
         while True:
             if counter < 2:
-                Logger.info(f'Escuchando... Programa activo desde hace {counter} s.')
+                Logger.info( f'Escuchando... Programa activo desde hace {counter} s.' )
                 counter += 4
             else:
-                Logger.info(f'Listening... Programa activo desde hace {counter} s.')
+                Logger.info( f'Listening... Programa activo desde hace {counter} s.' )
                 counter += 5
 
             ti.sleep(5)
@@ -106,22 +106,19 @@ class RumbleAI:
     def run(self):
         """ The event loop of the APP """
 
-        self.rumble_talk(
-            self.skills.match_skill('saludar')
-                .play()
-        )  # Before anything else...
+        # self.skills.match_skill( 'saludar' ).play( self )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
 
             # Getting input from the user
             try:
-                query: str = self.rumble_listen().lower()
-                Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
+                query: str = self.listen().lower()
+                Logger.info(f'{self.assistant_name.title( )} ha escuchado -> ' + query)
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
-                    self.rumble_talk( response.play() )
+                    response.play( self )
 
             except KeyboardInterrupt:
                 # Program stopped by Ctrl + C or IDE's stop button

@@ -17,8 +17,10 @@ class Time(Skill):
     def __str__(self):
         return self.name[self.id_language]
 
-    def play(self) -> str:
-        return f'Son las {datetime.datetime.now().strftime("%I:%M")}'
+    def play(self, rumble) -> str:
+        return rumble.talk(
+            f'Son las {datetime.datetime.now().strftime("%I:%M")}'
+        )
 
 
 
