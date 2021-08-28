@@ -1,11 +1,9 @@
 import datetime
 
-import pywhatkit
-
 from ...core.skill import Skill
 
 
-class YouTube(Skill):
+class RumbleShutdown(Skill):
     """
         Greets the user when requested
     """
@@ -20,12 +18,5 @@ class YouTube(Skill):
         return self.name[self.id_language]
 
     def play(self, rumble, **kwargs) -> None:
-        return self._play_on_youtube( rumble )
-
-    def _play_on_youtube(self, rumble):
-        """Play the first match encoountered on YouTube based on the input query"""
-        rumble.talk( "Qué te apetece escuchar en Youtube?" )
-
-        # This should potencially be upgradeable to more custom actions
-        # than just play a video
-        pywhatkit.playonyt( rumble.listen( ) )
+        rumble.talk(f'Me desconecto por un rato. Gracias, {kwargs[ "username" ]}')
+        quit( 0 )

@@ -6,6 +6,7 @@ from .skill_factory import SkillFactory
 
 # Rumble skills modules
 from ..skills.basic.greet import Greet
+from ..skills.basic.shutdown import RumbleShutdown
 from ..skills.info.date import Date
 from ..skills.info.time import Time
 from ..skills.youtube_actions.youtube import YouTube
@@ -47,11 +48,12 @@ class SkillsRegistry:
                 skill_kwargs['tags']
                 .values( )
             )[ self.id_language ]
+            # print(f'IDENTIFIERS: {identifiers}')
 
             for tag in identifiers:
+                print(f'TAG: {tag}')
                 if tag in keywords:
                     skill_kwargs.update( {'id_language': self.id_language} )
-                    print(f'TAG: {tag}')
                     return self.skill_factory.get_instance(
                         skill_kwargs[ 'name' ][ self.id_language ], **skill_kwargs
                     )
@@ -60,6 +62,14 @@ class SkillsRegistry:
 # A list with all the Rumble's availiable skills.
 rumble_skills_registry: dict = {
 
+    RumbleShutdown: {
+        'name': ['shutdown', 'apagar'],
+        'description': 'Shutdowns Rumble',
+        'tags': {
+            'english': ['shutdown'],
+            'spanish': ['apágate']
+        }
+    },
     Time: {
         'name': ['hour', 'hora'],
         'description': 'Retrieves info about current time',
@@ -81,11 +91,8 @@ rumble_skills_registry: dict = {
         'description': 'Greets the user (or any one) when requested',
         'tags': {
             'english': ['greet'],
-            'spanish': ['saluda, saludar, saludo'],
+            'spanish': ['saluda', 'saludar'],
         },
-        'user': {
-            'username': 'Alex'
-        }
     },
     YouTube: {
         'name': ['youtube', 'youtube'],

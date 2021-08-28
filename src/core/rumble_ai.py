@@ -51,7 +51,6 @@ class RumbleAI:
 
     def mic_setup(self):
         for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
-            # print(f'Audio device with name "{name}" is the device ID = {index}`')  # TODO Need all the translations
             print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
 
             while True:
@@ -105,26 +104,21 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
+        extra_data = {
+            'username': self.username
+        }
 
-        # self.talk(
-        #     self.skills.match_skill('saludar')
-        #         .play()
-        # )  # Before anything else...
+        self.skills.match_skill('saludar').play( self, **extra_data)  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
-
             # Getting input from the user
             try:
-                # query: str = self.listen( ).lower( )
-                query: str = "rumble qué hora es"
+                query: str = self.listen( ).lower( )
                 Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
-                    extra_data = {
-                        'username': self.username
-                    }
                     response.play( self, **extra_data )
 
             except KeyboardInterrupt:
