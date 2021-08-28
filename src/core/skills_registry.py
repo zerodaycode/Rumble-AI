@@ -47,11 +47,12 @@ class SkillsRegistry:
                 skill_kwargs['tags']
                 .values( )
             )[ self.id_language ]
+            # print(f'IDENTIFIERS: {identifiers}')
 
             for tag in identifiers:
+                print(f'TAG: {tag}')
                 if tag in keywords:
                     skill_kwargs.update( {'id_language': self.id_language} )
-                    print(f'TAG: {tag}')
                     return self.skill_factory.get_instance(
                         skill_kwargs[ 'name' ][ self.id_language ], **skill_kwargs
                     )
@@ -81,11 +82,8 @@ rumble_skills_registry: dict = {
         'description': 'Greets the user (or any one) when requested',
         'tags': {
             'english': ['greet'],
-            'spanish': ['saluda, saludar, saludo'],
+            'spanish': ['saluda', 'saludar'],
         },
-        'user': {
-            'username': 'Alex'
-        }
     },
     YouTube: {
         'name': ['youtube', 'youtube'],

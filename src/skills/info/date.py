@@ -17,7 +17,7 @@ class Date(Skill):
     def __str__(self):
         return self.name[self.id_language]
 
-    def play(self, rumble) -> str:
+    def play(self, rumble, **kwargs) -> str:
         return rumble.talk(
             f'''
                 Hoy es el, { str(datetime.datetime.now().day) },

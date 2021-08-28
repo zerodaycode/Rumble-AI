@@ -18,24 +18,24 @@ class Greet(Skill):
         return self.name[self.id_language]
 
     def play(self, rumble, **kwargs) -> str:
-        return self._greet( rumble )
+        return self._greet( rumble, **kwargs )
 
     def _greet(self, rumble, **kwargs):
         hour = datetime.datetime.now().hour
 
         if (hour >= 6) and (hour <= 13):
             return rumble.talk(
-                 f"Buenos días, {kwargs[ 'usename' ]}, cómo puedo ayudarte?"
+                 f"Buenos días, {kwargs[ 'username' ]}, cómo puedo ayudarte?"
             )
         elif (hour >= 14) and (hour < 21):
             return rumble.talk(
-                f"Buenas tardes, {kwargs[ 'usename' ]}, cómo puedo ayudarte?"
+                f"Buenas tardes, {kwargs[ 'username' ]}, cómo puedo ayudarte?"
             )
         elif (hour >= 21) and (hour <= 5):
             return rumble.talk(
-                f"Buenas noches, {kwargs[ 'usename' ]}, cómo puedo ayudarte?"
+                f"Buenas noches, {kwargs[ 'username' ]}, cómo puedo ayudarte?"
             )
         else:
             return rumble.talk(
-                f"Hola, {kwargs[ 'usename' ]}, cómo puedo ayudarte?"
+                f"Hola, {kwargs[ 'username' ]}, cómo puedo ayudarte?"
             )
