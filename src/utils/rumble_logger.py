@@ -13,12 +13,12 @@ class Logger:
 
     @staticmethod
     def info(message):
-        print(f'{Logger.CYAN} INFO: {message} {Logger.ENDC}')
+        print(f'{Logger.CYAN}INFO: {message} {Logger.ENDC}')
 
     @staticmethod
     def warning(message):
-        print(f'{Logger.WARNING} WARNING: {message} {Logger.ENDC}')
+        print(f'{Logger.WARNING}WARNING: {message} {Logger.ENDC}')
 
     @staticmethod
     def error(message):
-        print(f'{Logger.FAIL} ERROR: {message} {Logger.ENDC}')
+        print(f'{Logger.FAIL}ERROR: {message} {Logger.ENDC}')

@@ -9,6 +9,7 @@ from ..skills.basic.greet import Greet
 from ..skills.info.date import Date
 from ..skills.info.time import Time
 from ..skills.youtube_actions.youtube import YouTube
+from ..utils.rumble_logger import Logger
 
 
 class SkillsRegistry:
@@ -18,22 +19,22 @@ class SkillsRegistry:
     ]
 
     def __init__(self, id_language: int):
-        # self._rumble_skills = rumble_skills_registry
+        # id_language it's used to slice through the list of names
         self.id_language = id_language - 1
 
         # Here we starts our skill factory
-        self.skill_factory = SkillFactory( )
+        self.skill_factory = SkillFactory()
 
         # Automatize the process of register every skill on the skill's dict
         for skill, kwargs in rumble_skills_registry.items():
-            print(f'Skill: {skill}, kwargs: {kwargs}')
-            self.skill_factory.register_builder(
-                kwargs[ 'name' ][ self.id_language ], skill
+            self.skill_factory.register_object_identifier(
+                kwargs['name'][self.id_language], skill
             )
+        Logger.info('\nImprimiendo los builders a modo de info cuando se llama a create:')
+        [ print( key, instance ) for key, instance in self.skill_factory.instances.items( ) ]
 
     def match_skill(self, user_query: str) -> Skill:
-
-        # Filter no interesting words to match
+        """ Tries to find an skill based on what the user had input"""
         keywords = list(
             filter(
                 lambda word: word not in SkillsRegistry.word_filter,
@@ -41,18 +42,18 @@ class SkillsRegistry:
             )
         )
 
-        for skill_instance, skill_attrs in rumble_skills_registry.items():
+        for skill_instance, skill_kwargs in rumble_skills_registry.items():
             identifiers = list(
-                skill_attrs[ "tags" ].values( )
+                skill_kwargs['tags']
+                .values( )
             )[ self.id_language ]
-            print(identifiers)
+
             for tag in identifiers:
                 if tag in keywords:
-
-                    skill_attrs.update( { 'id_language': self.id_language } )
-
+                    skill_kwargs.update( {'id_language': self.id_language} )
+                    print(f'TAG: {tag}')
                     return self.skill_factory.get_instance(
-                        tag, **skill_attrs
+                        skill_kwargs[ 'name' ][ self.id_language ], **skill_kwargs
                     )
 
 
