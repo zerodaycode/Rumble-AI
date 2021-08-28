@@ -6,6 +6,7 @@ from .skill_factory import SkillFactory
 
 # Rumble skills modules
 from ..skills.basic.greet import Greet
+from ..skills.basic.open_program import OpenProgram
 from ..skills.basic.shutdown import RumbleShutdown
 from ..skills.info.date import Date
 from ..skills.info.time import Time
@@ -21,7 +22,10 @@ class SkillsRegistry:
 
     def __init__(self, id_language: int):
         # id_language it's used to slice through the list of names
-        self.id_language = id_language - 1
+        self.id_language = id_language
+
+        # The query that it's being processed
+        self.current_query = None
 
         # Here we starts our skill factory
         self.skill_factory = SkillFactory()
@@ -29,10 +33,12 @@ class SkillsRegistry:
         # Automatize the process of register every skill on the skill's dict
         for skill, kwargs in rumble_skills_registry.items():
             self.skill_factory.register_object_identifier(
-                kwargs['name'][self.id_language], skill
+                kwargs[ 'name' ][ self.id_language - 1 ], skill
             )
+
         Logger.info('\nImprimiendo los builders a modo de info cuando se llama a create:')
-        [ print( key, instance ) for key, instance in self.skill_factory.instances.items( ) ]
+        [ print( f'\t{ key.title() } -> { instance }' )
+          for key, instance in self.skill_factory.instances.items( ) ]
 
     def match_skill(self, user_query: str) -> Skill:
         """ Tries to find an skill based on what the user had input"""
@@ -43,19 +49,19 @@ class SkillsRegistry:
             )
         )
 
-        for skill_instance, skill_kwargs in rumble_skills_registry.items():
+        for skill_instance, skill_args in rumble_skills_registry.items():
             identifiers = list(
-                skill_kwargs['tags']
+                skill_args['tags']
                 .values( )
-            )[ self.id_language ]
-            # print(f'IDENTIFIERS: {identifiers}')
+            )[ self.id_language - 1 ]
 
             for tag in identifiers:
-                print(f'TAG: {tag}')
                 if tag in keywords:
-                    skill_kwargs.update( {'id_language': self.id_language} )
+                    skill_args.update( {
+                        'id_language': self.id_language,
+                    } )
                     return self.skill_factory.get_instance(
-                        skill_kwargs[ 'name' ][ self.id_language ], **skill_kwargs
+                        skill_args[ 'name' ][ self.id_language - 1 ], **skill_args
                     )
 
 
@@ -69,6 +75,14 @@ rumble_skills_registry: dict = {
             'english': ['shutdown'],
             'spanish': ['apágate']
         }
+    },
+    OpenProgram: {
+        'name': ['open', 'abrir'],
+        'description': 'Opens an installed program on the local machine',
+        'tags': {
+            'english': ['open'],
+            'spanish': ['abre']
+        },
     },
     Time: {
         'name': ['hour', 'hora'],

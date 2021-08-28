@@ -1,6 +1,6 @@
 # Rumble-AI, the open source virtual assistant
 
-Tired of those... `unknamed?` virtual assistants that tracks every word, move, action and thought?
+Tired of those... `unnamed?` virtual assistants that tracks every word, move, action and thought?
 
 Be welcome to the big, and NOT only one but not as other ones open source virtual assistant **RUMBLE!**
 

@@ -17,7 +17,7 @@ class YouTube(Skill):
         self.id_language: int = id_language
 
     def __str__(self):
-        return self.name[self.id_language]
+        return self.name[ self.id_language - 1 ]
 
     def play(self, rumble, **kwargs) -> None:
         return self._play_on_youtube( rumble )
@@ -28,4 +28,4 @@ class YouTube(Skill):
 
         # This should potencially be upgradeable to more custom actions
         # than just play a video
-        pywhatkit.playonyt( rumble.listen( ) )
+        pywhatkit.playonyt( rumble.listen() )

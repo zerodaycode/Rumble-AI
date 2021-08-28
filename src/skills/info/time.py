@@ -15,7 +15,7 @@ class Time(Skill):
         self.id_language: int = id_language
 
     def __str__(self):
-        return self.name[self.id_language]
+        return self.name[ self.id_language - 1 ]
 
     def play(self, rumble, **kwargs) -> str:
         return rumble.talk(

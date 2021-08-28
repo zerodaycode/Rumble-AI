@@ -15,9 +15,9 @@ class Greet(Skill):
         self.id_language: int = id_language
 
     def __str__(self):
-        return self.name[self.id_language]
+        return self.name[ self.id_language - 1 ]
 
-    def play(self, rumble, **kwargs) -> str:
+    def play(self, rumble, **kwargs) -> None:
         return self._greet( rumble, **kwargs )
 
     def _greet(self, rumble, **kwargs):

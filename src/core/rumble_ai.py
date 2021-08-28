@@ -25,10 +25,10 @@ from src.utils.rumble_logger import Logger
 
 
 class RumbleAI:
-    assistant_name = "Rumble"
+    assistant_name = "Paco"
 
     def __init__(self):
-        self.username = 'Álex'
+        self.username = 'Alma'
         self.assistant_name = RumbleAI.assistant_name.lower()
 
         # Provisional -- TODO -- class Config?
@@ -55,14 +55,11 @@ class RumbleAI:
 
             while True:
                 mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
-
                 try:
                     mic_id_request = int(mic_id_request)
-
                     if 0 <= mic_id_request <= index:
                         self.mic_input_device = mic_id_request
                         break
-
                 except ValueError:
                     print("Por favor, introduce un número válido")
 
@@ -104,18 +101,23 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
-        extra_data = {
-            'username': self.username
-        }
-
-        self.skills.match_skill('saludar').play( self, **extra_data)  # Before anything else...
+        self.skills.match_skill('saludar').play(
+            self, **{ 'username': self.username }
+        )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
             # Getting input from the user
             try:
                 query: str = self.listen( ).lower( )
-                Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
+                # query: str = "paco, qué hora es"
+                Logger.info(
+                    f'{self.assistant_name.title()} ha escuchado -> ' + query)
+
+                extra_data = {
+                    'username': self.username,
+                    'query': query
+                }
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
