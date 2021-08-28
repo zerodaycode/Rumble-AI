@@ -28,7 +28,7 @@ class RumbleAI:
     assistant_name = "Rumble"
 
     def __init__(self):
-        self.username = 'Álex'
+        self.username = 'Alma'
         self.assistant_name = RumbleAI.assistant_name.lower()
 
         # Provisional -- TODO -- class Config?
@@ -106,18 +106,13 @@ class RumbleAI:
     def run(self):
         """ The event loop of the APP """
 
-        # self.talk(
-        #     self.skills.match_skill('saludar')
-        #         .play()
-        # )  # Before anything else...
+        # self.skills.match_skill('rumble saludar').play( self ) # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
-
             # Getting input from the user
             try:
-                # query: str = self.listen( ).lower( )
-                query: str = "rumble qué hora es"
+                query: str = self.listen( ).lower( )
                 Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
 
                 if query.__contains__(self.assistant_name):
