@@ -8,7 +8,7 @@ class Skill(metaclass = ABCMeta):
     """
 
     @abstractmethod
-    def play(self, rumble) -> Any:
+    def play(self, rumble, **kwargs) -> Any:
         """
         Performs the designed action, based on the logic implemented for this method
         by all the classes that subclass this one, and overrides this method
@@ -20,11 +20,3 @@ class Skill(metaclass = ABCMeta):
 
         """
         pass  # abstract methods does not provides an implementation in Python
-
-    def prueba(self, chisme, cosa):
-        """
-
-        :param chisme:
-        :param cosa:
-        :return:
-        """
