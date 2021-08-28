@@ -14,5 +14,5 @@ class SkillFactory(ObjectFactory):
         :param kwargs:
         :return:
         """
-        return self.create(skill, **kwargs)
+        return self.create_instance(skill, **kwargs)
 

@@ -106,24 +106,28 @@ class RumbleAI:
     def run(self):
         """ The event loop of the APP """
 
-        self.talk(
-            self.skills.match_skill('saludar')
-                .play()
-        )  # Before anything else...
+        # self.talk(
+        #     self.skills.match_skill('saludar')
+        #         .play()
+        # )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
 
             # Getting input from the user
             try:
-                query: str = self.listen().lower()
+                # query: str = self.listen( ).lower( )
+                query: str = "rumble qué hora es"
                 Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
-                    response.play( self )
+                    extra_data = {
+                        'username': self.username
+                    }
+                    response.play( self, **extra_data )
 
             except KeyboardInterrupt:
                 # Program stopped by Ctrl + C or IDE's stop button
-                Logger.warning(f'Program stopped by the user: {self.username}')
+                Logger.warning(f'Program stopped by the user: { self.username }')
                 sys.exit()
