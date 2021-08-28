@@ -1,4 +1,3 @@
-from src.utils.rumble_logger import Logger
 from src.core.core_exceptions.factory_exceptions import NoObjectIdentifierFound
 
 
