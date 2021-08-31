@@ -7,5 +7,5 @@ __pycache__/
 __venv__/
 /venv/
 *.jpg
-.idea/
+idea/
 /src/core/pywhatkit_dbs.txt
