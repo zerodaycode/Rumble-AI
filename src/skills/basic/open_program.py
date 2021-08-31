@@ -22,5 +22,6 @@ class OpenProgram(Skill):
         """Opens a program"""
         # Parses the query again, trying to look for what program wants the user open
         rumble.talk(
-            f'La query que estoy procesando es: { kwargs[ "query" ] }'
+            # f'La query que estoy procesando es: { kwargs[ "query" ] }'
+            '''En Gundriz, a matanza facíase cando o herdeiro viña de vacacións de navidad, nas vacacións do colegio, sobre o '''
         )
