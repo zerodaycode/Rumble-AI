@@ -8,7 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/skills/info/__pycache__" />
       <excludeFolder url="file://$MODULE_DIR$/src/utils/__pycache__" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (Rumble-AI)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.9 (pythonProject)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyNamespacePackagesService">
