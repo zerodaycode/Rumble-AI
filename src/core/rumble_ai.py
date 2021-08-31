@@ -35,6 +35,7 @@ class RumbleAI:
         self.mic_input_device = None
         self.language = self.lang_setup()
         self.id_language = 2
+        self.mic_setup()
 
         # AI skills
         self.skills = SkillsRegistry( self.id_language )
@@ -51,15 +52,16 @@ class RumbleAI:
         for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
             print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
 
-            while True:
-                mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
-                try:
-                    mic_id_request = int(mic_id_request)
-                    if 0 <= mic_id_request <= index:
-                        self.mic_input_device = mic_id_request
-                        break
-                except ValueError:
-                    print("Por favor, introduce un número válido")
+        while True:
+            mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
+            try:
+                mic_id_request = int(mic_id_request)
+                if 0 <= mic_id_request <= index:
+                # if mic_id_request >= 0 and mic_id_request <= index:
+                    self.mic_input_device = mic_id_request
+                    break
+            except ValueError:
+                print("Por favor, introduce un número válido")
 
     def talk(self, audio):
         self.engine.say(audio)
@@ -102,6 +104,8 @@ class RumbleAI:
             'username': self.username,
             'keywords': []
         }
+
+
 
         self.skills.match_skill(['saludar']).play(
             self, **{ 'username': self.username }
