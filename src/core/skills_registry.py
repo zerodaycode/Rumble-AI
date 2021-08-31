@@ -1,6 +1,3 @@
-import logging
-
-# from .rumble_ai import RumbleAI
 from .skill import Skill
 from .skill_factory import SkillFactory
 
@@ -15,10 +12,6 @@ from ..utils.rumble_logger import Logger
 
 
 class SkillsRegistry:
-    word_filter = [
-        'rumble',  # ... TODO --- Complete it
-        'a', 'para', 'cabe',
-    ]
 
     def __init__(self, id_language: int):
         # id_language it's used to slice through the list of names
@@ -40,15 +33,11 @@ class SkillsRegistry:
         [ print( f'\t{ key.title() } -> { instance }' )
           for key, instance in self.skill_factory.instances.items( ) ]
 
-    def match_skill(self, user_query: str) -> Skill:
-        """ Tries to find an skill based on what the user had input"""
-        keywords = list(
-            filter(
-                lambda word: word not in SkillsRegistry.word_filter,
-                user_query.split( )
-            )
-        )
-
+    def match_skill(self, keywords: list[str]) -> Skill:
+        """
+        Tries to find an skill based on a  list of words created by parsing
+        what the user had requested through the audio input
+        """
         for skill_instance, skill_args in rumble_skills_registry.items():
             identifiers = list(
                 skill_args['tags']
@@ -81,7 +70,7 @@ rumble_skills_registry: dict = {
         'description': 'Opens an installed program on the local machine',
         'tags': {
             'english': ['open'],
-            'spanish': ['abre']
+            'spanish': ['abre', 'mata']
         },
     },
     Time: {

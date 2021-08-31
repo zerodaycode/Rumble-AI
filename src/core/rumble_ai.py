@@ -1,5 +1,4 @@
-import logging
-import subprocess
+import multiprocessing
 import sys
 import threading
 
@@ -25,17 +24,16 @@ from src.utils.rumble_logger import Logger
 
 
 class RumbleAI:
-    assistant_name = "Paco"
+    assistant_name = "Rumble"
 
     def __init__(self):
-        self.username = 'Alma'
+        self.username = 'Álex'
         self.assistant_name = RumbleAI.assistant_name.lower()
 
         # Provisional -- TODO -- class Config?
         self.engine = pyttsx3.init()
         self.mic_input_device = None
         self.language = self.lang_setup()
-        # self.listening_th = None
         self.id_language = 2
 
         # AI skills
@@ -73,54 +71,67 @@ class RumbleAI:
         query = ""
 
         with speech_recognition.Microphone(device_index = self.mic_input_device) as source:
-            # if self.listening_th is None:
-            #     self.listening_th = threading.Thread(target = self.print_listening)
-            #     self.listening_th.setName('Listening Thread')
-            #     self.listening_th.start()
+            # Just for printing a warning that the program it's listening for audui input
+            # listening_th = multiprocessing.Process(target=self.print_listening)
+            # listening_th.start()
 
             r.pause_threshold = 1
             try:
                 query: str = r.recognize_google(r.listen(source), language = self.language)
             except speech_recognition.UnknownValueError as e:
                 Logger.error(f'No ha sido posible reconocer el audio de entrada.\n{e}')
-
+            # listening_th.terminate()
         return query
 
     @staticmethod
     def print_listening():
         counter = 1
         while True:
-            if counter < 2:
-                Logger.info(f'Escuchando... Programa activo desde hace {counter} s.')
-                counter += 4
-            else:
-                Logger.info(f'Listening... Programa activo desde hace {counter} s.')
-                counter += 5
+            # if counter < 2:
+            Logger.info(f'Escuchando hace {counter} s.')
+            counter += 1
+            # else:
+            #     Logger.info(f'Listening... Programa activo desde hace {counter} s.')
+            #     counter += 5
 
             ti.sleep(5)
 
     def run(self):
         """ The event loop of the APP """
-        self.skills.match_skill('saludar').play(
+        extra_data = {
+            'username': self.username,
+            'keywords': []
+        }
+
+        self.skills.match_skill(['saludar']).play(
             self, **{ 'username': self.username }
         )  # Before anything else...
+
+        word_filter = [
+            self.assistant_name,  # ... TODO --- Complete it
+            'a', 'para', 'cabe',
+        ]
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
             # Getting input from the user
             try:
-                query: str = self.listen( ).lower( )
-                # query: str = "paco, qué hora es"
+                user_query: str = self.listen( ).lower( )
+
+                keywords = list(
+                    filter(
+                        lambda word: word not in word_filter,
+                        user_query.split()
+                    )
+                )
+
+                extra_data.update({'keywords': keywords})
+
                 Logger.info(
-                    f'{self.assistant_name.title()} ha escuchado -> ' + query)
+                    f'{self.assistant_name.title()} ha escuchado -> ' + user_query)
 
-                extra_data = {
-                    'username': self.username,
-                    'query': query
-                }
-
-                if query.__contains__(self.assistant_name):
-                    response = self.skills.match_skill( query )
+                if user_query.__contains__(self.assistant_name):
+                    response = self.skills.match_skill( keywords )
                     response.play( self, **extra_data )
 
             except KeyboardInterrupt:
