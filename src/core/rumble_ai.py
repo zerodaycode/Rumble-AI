@@ -25,10 +25,10 @@ from src.utils.rumble_logger import Logger
 
 
 class RumbleAI:
-    assistant_name = "Rumble"
+    assistant_name = "Paco"
 
     def __init__(self):
-        self.username = 'Álex'
+        self.username = 'Alma'
         self.assistant_name = RumbleAI.assistant_name.lower()
 
         # Provisional -- TODO -- class Config?
@@ -51,27 +51,23 @@ class RumbleAI:
 
     def mic_setup(self):
         for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
-            # print(f'Audio device with name "{name}" is the device ID = {index}`')  # TODO Need all the translations
             print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
 
             while True:
                 mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
-
                 try:
                     mic_id_request = int(mic_id_request)
-
                     if 0 <= mic_id_request <= index:
                         self.mic_input_device = mic_id_request
                         break
-
                 except ValueError:
                     print("Por favor, introduce un número válido")
 
-    def rumble_talk(self, audio):
+    def talk(self, audio):
         self.engine.say(audio)
         self.engine.runAndWait()
 
-    def rumble_listen(self):
+    def listen(self):
         r = speech_recognition.Recognizer()
 
         query = ""
@@ -105,25 +101,29 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
-
-        self.rumble_talk(
-            self.skills.match_skill('saludar')
-                .play()
+        self.skills.match_skill('saludar').play(
+            self, **{ 'username': self.username }
         )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
-
             # Getting input from the user
             try:
-                query: str = self.rumble_listen().lower()
-                Logger.info(f'{self.assistant_name} ha escuchado -> ' + query)
+                query: str = self.listen( ).lower( )
+                # query: str = "paco, qué hora es"
+                Logger.info(
+                    f'{self.assistant_name.title()} ha escuchado -> ' + query)
+
+                extra_data = {
+                    'username': self.username,
+                    'query': query
+                }
 
                 if query.__contains__(self.assistant_name):
                     response = self.skills.match_skill( query )
-                    self.rumble_talk( response.play() )
+                    response.play( self, **extra_data )
 
             except KeyboardInterrupt:
                 # Program stopped by Ctrl + C or IDE's stop button
-                Logger.warning(f'Program stopped by the user: {self.username}')
+                Logger.warning(f'Program stopped by the user: { self.username }')
                 sys.exit()
