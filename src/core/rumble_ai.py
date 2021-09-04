@@ -90,14 +90,9 @@ class RumbleAI:
     def print_listening():
         counter = 1
         while True:
-            # if counter < 2:
             Logger.info(f'Escuchando hace {counter} s.')
             counter += 1
-            # else:
-            #     Logger.info(f'Listening... Programa activo desde hace {counter} s.')
-            #     counter += 5
-
-            ti.sleep(5)
+            ti.sleep(1)
 
     def run(self):
         """ The event loop of the APP """
