@@ -8,3 +8,4 @@ __venv__/
 /venv/
 *.jpg
 .idea/
+/src/core/pywhatkit_dbs.txt
