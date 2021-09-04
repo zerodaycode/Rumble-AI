@@ -1,0 +1,5 @@
+
+
+
+class ExamplePlugin(Skill):
+    pass

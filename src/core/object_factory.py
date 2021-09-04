@@ -30,7 +30,8 @@ class ObjectFactory:
 
     def create_instance(self, key, **kwargs):
         """
-        Creates a new object if the provided key matches any of the self._instances keys
+        Creates a new object if the provided key matches any of the self._instances keys.
+        If not founds a desired instance on the self._instances dict, raises NoObjectIdentifierFound
         :param key: str
         :param kwargs: dict. The (if present) args of the callbacks
         :return: Object
@@ -44,5 +45,14 @@ class ObjectFactory:
             return instance( **kwargs )
         else:
             raise NoObjectIdentifierFound
+
+    def get_instance(self, skill, **kwargs):
+        """
+        This method invokes the generic .create( key, **kwargs ) method from ObjectFactory
+        :param skill:
+        :param kwargs:
+        :return:
+        """
+        return self.create_instance( skill, **kwargs )
 
 

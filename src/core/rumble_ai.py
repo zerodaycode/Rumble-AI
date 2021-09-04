@@ -35,7 +35,7 @@ class RumbleAI:
         self.mic_input_device = None
         self.language = self.lang_setup()
         self.id_language = 2
-        self.mic_setup()
+        # self.mic_setup()
 
         # AI skills
         self.skills = SkillsRegistry( self.id_language )
@@ -45,27 +45,27 @@ class RumbleAI:
         return "es-ES"  # TODO Config file -- class
 
     def voice_setup(self):
-        voices = self.engine.getProperty('voices')
-        self.engine.setProperty("voice", voices[0].id)
+        voices = self.engine.getProperty( 'voices' )
+        self.engine.setProperty( 'voice', voices[0].id )
 
     def mic_setup(self):
         availiable_options = 0
-        for index, name in microphones_list := enumerate(speech_recognition.Microphone.list_microphone_names()):
-            print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
+        for index, name in enumerate( speech_recognition.Microphone.list_microphone_names() ):
+            print( f'Dispositivo de audio: "{ name }", identificado con el ID = { index }.' )
             availiable_options += 1
 
         while True:
-            mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
+            mic_id_request = input( '\nPor favor, introduce uno de los números de alguno de los dispositivo\n' )
             try:
-                mic_id_request = int(mic_id_request)
+                mic_id_request = int( mic_id_request )
                 if 0 <= mic_id_request <= availiable_options:
                     self.mic_input_device = mic_id_request
                     break
             except ValueError:
-                print("Por favor, introduce un número válido")
+                print( 'Por favor, introduce un número válido' )
 
     def talk(self, audio):
-        self.engine.say(audio)
+        self.engine.say( audio )
         self.engine.runAndWait()
 
     def listen(self):
@@ -73,16 +73,16 @@ class RumbleAI:
 
         query = ""
 
-        with speech_recognition.Microphone(device_index = self.mic_input_device) as source:
+        with speech_recognition.Microphone( device_index = self.mic_input_device ) as source:
             # Just for printing a warning that the program it's listening for audui input
             # listening_th = multiprocessing.Process(target=self.print_listening)
             # listening_th.start()
 
             r.pause_threshold = 1
             try:
-                query: str = r.recognize_google(r.listen(source), language = self.language)
-            except speech_recognition.UnknownValueError as e:
-                Logger.error(f'No ha sido posible reconocer el audio de entrada.\n{e}')
+                query: str = r.recognize_google( r.listen( source ), language = self.language )
+            except speech_recognition.UnknownValueError as error:
+                Logger.error( f'No ha sido posible reconocer el audio de entrada.\n{ error }' )
             # listening_th.terminate()
         return query
 
@@ -90,7 +90,7 @@ class RumbleAI:
     def print_listening():
         counter = 1
         while True:
-            Logger.info(f'Escuchando hace {counter} s.')
+            Logger.info( f'Escuchando hace { counter } s.' )
             counter += 1
             ti.sleep(1)
 
@@ -101,7 +101,7 @@ class RumbleAI:
             'keywords': []
         }
 
-        self.skills.match_skill(['saludar']).play(
+        self.skills.match_skill( ['saludar'] ).play(
             self, **{ 'username': self.username }
         )  # Before anything else...
 
@@ -123,16 +123,15 @@ class RumbleAI:
                     )
                 )
 
-                extra_data.update({'keywords': keywords})
+                extra_data.update( { 'keywords': keywords } )
 
-                Logger.info(
-                    f'{self.assistant_name.title()} ha escuchado -> ' + user_query)
+                Logger.info( f'{ self.assistant_name.title() } ha escuchado -> ' + user_query )
 
-                if user_query.__contains__(self.assistant_name):
+                if user_query.__contains__( self.assistant_name ):
                     response = self.skills.match_skill( keywords )
                     response.play( self, **extra_data )
 
             except KeyboardInterrupt:
                 # Program stopped by Ctrl + C or IDE's stop button
-                Logger.warning(f'Program stopped by the user: { self.username }')
+                Logger.warning( f'Program manually stopped by the user: { self.username }' )
                 sys.exit()

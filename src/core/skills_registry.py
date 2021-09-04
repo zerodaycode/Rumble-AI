@@ -1,3 +1,4 @@
+from .plugins_registry import PluginsRegistry
 from .skill import Skill
 from .skill_factory import SkillFactory
 
@@ -12,9 +13,12 @@ from ..utils.rumble_logger import Logger
 
 
 class SkillsRegistry:
+    """
+        Takes care about handle a way to store and retrieve all the Rumble's availiable skills
+    """
 
     def __init__(self, id_language: int):
-        # id_language it's used to slice through the list of names
+        # id_language it's used to slice through the list of a skill names property
         self.id_language = id_language
 
         # The query that it's being processed
@@ -29,14 +33,20 @@ class SkillsRegistry:
                 kwargs[ 'name' ][ self.id_language - 1 ], skill
             )
 
-        Logger.info('\nImprimiendo los builders a modo de info cuando se llama a create:')
+        Logger.info('Instances identifiers availiables on the program:')
         [ print( f'\t{ key.title() } -> { instance }' )
-          for key, instance in self.skill_factory.instances.items( ) ]
+            for key, instance in self.skill_factory.instances.items( )
+        ]
+
+        # <<<<<<<<<<< -------------------------------------- >>>>>>>>>>>>>>>>>>>>>>>>
+        self.plugins_registry = PluginsRegistry()
+        self.plugins_registry.scan_plugins_directory()
+        print( f'Available plugins: {self.plugins_registry.plugin_instance_identifiers}' )
 
     def match_skill(self, keywords: list[str]) -> Skill:
         """
-        Tries to find an skill based on a  list of words created by parsing
-        what the user had requested through the audio input
+            Tries to find an skill based on a list of words created by parsing
+            what the user had requested through the audio input
         """
         for skill_instance, skill_args in rumble_skills_registry.items():
             identifiers = list(
