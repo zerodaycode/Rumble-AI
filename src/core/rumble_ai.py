@@ -49,15 +49,16 @@ class RumbleAI:
         self.engine.setProperty("voice", voices[0].id)
 
     def mic_setup(self):
-        for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
+        availiable_options = 0
+        for index, name in microphones_list := enumerate(speech_recognition.Microphone.list_microphone_names()):
             print(f'Dispositivo de audio: "{name}", identificado con el ID = {index}`.')
+            availiable_options += 1
 
         while True:
             mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
             try:
                 mic_id_request = int(mic_id_request)
-                if 0 <= mic_id_request <= index:
-                # if mic_id_request >= 0 and mic_id_request <= index:
+                if 0 <= mic_id_request <= availiable_options:
                     self.mic_input_device = mic_id_request
                     break
             except ValueError:
@@ -105,8 +106,6 @@ class RumbleAI:
             'keywords': []
         }
 
-
-
         self.skills.match_skill(['saludar']).play(
             self, **{ 'username': self.username }
         )  # Before anything else...
@@ -120,7 +119,7 @@ class RumbleAI:
         while True:
             # Getting input from the user
             try:
-                user_query: str = self.listen( ).lower( )
+                user_query: str = self.listen().lower()
 
                 keywords = list(
                     filter(
