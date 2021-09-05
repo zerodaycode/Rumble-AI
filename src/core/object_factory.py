@@ -10,33 +10,38 @@ class ObjectFactory:
     """
 
     def __init__(self):
-        self._builders = {}
+        self._instances = { }
 
-    def register_builder(self, key, builder):
+    @property
+    def instances(self):
+        return self._instances
+
+    def register_object_identifier(self, key, instance):
         """
         :param key: str
-        :param builder:
-            The builder parameter can be any object that implements the callable interface.
-            This means a Builder can be a function, a class, or an object that implements .__call__().
+        :param instance:
+            The instance parameter can be any object that implements the callable interface.
+            This means an Instance can be a function, a class, or an object that implements .__call__().
         """
-        self._builders[key] = builder
+        self._instances[ key ] = instance
 
-    def create(self, key, **kwargs):
+    def create_instance(self, key, **kwargs):
         """
+        Creates a new object if the provided key matches any of the self._instances keys.
+        If not founds a desired instance on the self._instances dict, raises NoObjectIdentifierFound
         :param key: str
         :param kwargs: dict. The (if present) args of the callbacks
         :return: Object
         """
+        return self._instances.get( key )( **kwargs )
 
-        print('Imprimiendo los builders a modo de info cuando se llama a create:')
-        print(self._builders)
-
-        builder = self._builders.get(key)
-
-        if builder:
-            return builder(**kwargs)
-        else:
-            # raise ValueError(key)
-            print(f'No key: {key} found on builders')
+    def get_instance(self, skill, **kwargs):
+        """
+        This method invokes the generic .create( key, **kwargs ) method from ObjectFactory
+        :param skill:
+        :param kwargs:
+        :return:
+        """
+        return self.create_instance( skill, **kwargs )
 
 

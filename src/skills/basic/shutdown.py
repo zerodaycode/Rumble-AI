@@ -3,9 +3,9 @@ import datetime
 from ...core.skill import Skill
 
 
-class Date(Skill):
+class RumbleShutdown(Skill):
     """
-    Retrieves the today's date
+        Greets the user when requested
     """
 
     def __init__(self, name, description, tags, id_language):
@@ -17,11 +17,6 @@ class Date(Skill):
     def __str__(self):
         return self.name[ self.id_language - 1 ]
 
-    def play(self, rumble, **kwargs) -> str:
-        return rumble.talk(
-            f'''
-                Hoy es el, { str( datetime.datetime.now().day ) },
-                del, { str( datetime.datetime.now().month ) },
-                del, { str( datetime.datetime.now().year ) }
-            '''
-        )
+    def play(self, rumble, **kwargs) -> None:
+        rumble.talk(f'Me desconecto por un rato. Gracias, {kwargs[ "username" ]}')
+        quit( 0 )

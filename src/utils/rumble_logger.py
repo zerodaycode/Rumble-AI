@@ -12,13 +12,28 @@ class Logger:
     ENDC = '\033[0m'
 
     @staticmethod
-    def info(message):
-        print(f'{Logger.CYAN} INFO: {message} {Logger.ENDC}')
+    def ident_message(ident_lvl):
+        identation = ''
+        for _ in range( ident_lvl ):
+            identation += '\t'
+        return identation
 
     @staticmethod
-    def warning(message):
-        print(f'{Logger.WARNING} WARNING: {message} {Logger.ENDC}')
+    def info(message, ident_lvl=0):
+        identation = Logger.ident_message( ident_lvl )
+        print( f'{Logger.CYAN}{identation}INFO: {message} {Logger.ENDC}' )
 
     @staticmethod
-    def error(message):
-        print(f'{Logger.FAIL} ERROR: {message} {Logger.ENDC}')
+    def success(message, ident_lvl=0):
+        identation = Logger.ident_message( ident_lvl )
+        print( f'{Logger.GREEN}{identation}{message}{Logger.ENDC}' )
+
+    @staticmethod
+    def warning(message, ident_lvl=0):
+        identation = Logger.ident_message(ident_lvl)
+        print( f'{Logger.WARNING}{identation}WARNING: {message} {Logger.ENDC}' )
+
+    @staticmethod
+    def error(message, ident_lvl=0):
+        identation = Logger.ident_message(ident_lvl)
+        print( f'{Logger.FAIL}{identation}ERROR: {message} {Logger.ENDC}' )
