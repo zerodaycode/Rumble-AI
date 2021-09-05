@@ -20,8 +20,8 @@ class Logger:
 
     @staticmethod
     def info(message, ident_lvl=0):
-        Logger.ident_message( ident_lvl )
-        print( f'{Logger.CYAN}INFO: {message} {Logger.ENDC}' )
+        identation = Logger.ident_message( ident_lvl )
+        print( f'{Logger.CYAN}{identation}INFO: {message} {Logger.ENDC}' )
 
     @staticmethod
     def success(message, ident_lvl=0):
@@ -30,8 +30,10 @@ class Logger:
 
     @staticmethod
     def warning(message, ident_lvl=0):
-        print( f'{Logger.WARNING}WARNING: {message} {Logger.ENDC}' )
+        identation = Logger.ident_message(ident_lvl)
+        print( f'{Logger.WARNING}{identation}WARNING: {message} {Logger.ENDC}' )
 
     @staticmethod
     def error(message, ident_lvl=0):
-        print( f'{Logger.FAIL}ERROR: {message} {Logger.ENDC}' )
+        identation = Logger.ident_message(ident_lvl)
+        print( f'{Logger.FAIL}{identation}ERROR: {message} {Logger.ENDC}' )

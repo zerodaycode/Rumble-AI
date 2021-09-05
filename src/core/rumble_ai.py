@@ -21,6 +21,7 @@ import smtplib
 
 from .skills_registry import SkillsRegistry
 from src.utils.rumble_logger import Logger
+from .core_exceptions.skills_exceptions import NoSkillFound
 
 
 class RumbleAI:
@@ -39,6 +40,15 @@ class RumbleAI:
 
         # AI skills
         self.skills = SkillsRegistry( self.id_language )
+
+        self.word_filter = [
+            self.assistant_name,  # ... TODO --- Complete it
+            'a', 'para', 'cabe',
+        ]
+        self.extra_data = {
+            'username': self.username,
+            'keywords': []
+        }
 
     @staticmethod
     def lang_setup():
@@ -96,42 +106,40 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
-        extra_data = {
-            'username': self.username,
-            'keywords': []
-        }
-
         self.skills.match_skill( ['saludar'] ).play(
             self, **{ 'username': self.username }
         )  # Before anything else...
-
-        word_filter = [
-            self.assistant_name,  # ... TODO --- Complete it
-            'a', 'para', 'cabe',
-        ]
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
             # Getting input from the user
             try:
                 user_query: str = self.listen().lower()
-
                 keywords = list(
                     filter(
-                        lambda word: word not in word_filter,
+                        lambda word: word not in self.word_filter,
                         user_query.split()
                     )
                 )
+                self.extra_data.update( { 'keywords': keywords } )
 
-                extra_data.update( { 'keywords': keywords } )
-
-                Logger.info( f'{ self.assistant_name.title() } ha escuchado -> ' + user_query )
+                if user_query != '':
+                    Logger.info( f'{ self.assistant_name.title() } ha escuchado -> ' + user_query )
 
                 if user_query.__contains__( self.assistant_name ):
                     response = self.skills.match_skill( keywords )
-                    response.play( self, **extra_data )
+                    try:
+                        if response is not None:
+                            response.play( self, **self.extra_data )
+                        else:
+                            raise NoSkillFound( user_query )
+                    except NoSkillFound as error:
+                        Logger.warning( error, 2 )
+                        self.talk( f'Lo siento { self.username }, '
+                                   f'pero no he entendido lo que me has pedido' )
 
             except KeyboardInterrupt:
                 # Program stopped by Ctrl + C or IDE's stop button
+                print()
                 Logger.warning( f'Program manually stopped by the user: { self.username }' )
                 sys.exit()

@@ -1,6 +1,3 @@
-from src.core.core_exceptions.factory_exceptions import NoObjectIdentifierFound
-
-
 class ObjectFactory:
     """
     This interface supports the creation of any type of object.
@@ -36,15 +33,7 @@ class ObjectFactory:
         :param kwargs: dict. The (if present) args of the callbacks
         :return: Object
         """
-
-        instance = self._instances.get( key )
-
-        if instance:
-            # If an object identifier is founded, creates a new instance (notate the parenthesis)
-            # and pass the extra arguments to the constructor
-            return instance( **kwargs )
-        else:
-            raise NoObjectIdentifierFound
+        return self._instances.get( key )( **kwargs )
 
     def get_instance(self, skill, **kwargs):
         """
