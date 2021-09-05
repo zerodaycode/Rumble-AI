@@ -1,7 +1,8 @@
 import os
 
 from src.utils.rumble_logger import Logger
-from src.core.core_exceptions.plugin_exceptions import NoInheritsFromSkill
+from src.core.core_exceptions.plugin_exceptions import NotValidPluginFound, NoInheritsFromSkill
+from src.core.core_exceptions.skills_exceptions import SkillNotContainsNameParameter, SkillNamesListWrongLength
 
 
 class PluginsRegistry:
@@ -22,27 +23,32 @@ class PluginsRegistry:
         Logger.info('Elements founded on plugins folder:')
 
         for plugin_dir_name in os.listdir( self.root_plugins_dir ):
+
             if os.path.isdir( current_dir_level := self.root_plugins_dir + plugin_dir_name ):
-                if plugin_identifier := self._validate_plugin( plugin_dir_name, current_dir_level ):
+                plugin_identifier = PluginsRegistry._validate_plugin( plugin_dir_name, current_dir_level )
+
+                if plugin_identifier is not None:
                     if plugin_identifier not in self.plugin_instance_identifiers:
+                        self.plugin_instance_identifiers.append( plugin_identifier )
                         Logger.success( f'Valid plugin founded! -> { plugin_identifier }', 3 )
                     else:
-                        Logger.warning(f'Plugin already tracked! -> {plugin_identifier}', 3)
-                else:
-                    Logger.error( f'NOT a valid plugin -> { plugin_identifier }', 3 )
+                        Logger.warning( f'Plugin already tracked! -> {plugin_identifier}', 3)
 
-    def _validate_plugin(self, plugin_dir_name: str, current_dir_level: str ) -> str:
+
+    @staticmethod
+    def _validate_plugin(plugin_dir_name: str, current_dir_level: str ) -> str:
         """ Founded a plugin candidate on plugins folder, validates if it's OK to be added as a Rumble skill """
         print( '\t' + f'Plugin candidate on directory: { plugin_dir_name }' )
         if PluginsRegistry._validate_plugin_folder_name( plugin_dir_name ):
             print( '\t\t' + f'{ plugin_dir_name } is a valid folder name' )
+
             for filename in os.listdir( current_dir_level ):
                 print( '\t\t\t' + f'File { filename } ON { plugin_dir_name }' )
+
                 if PluginsRegistry._validate_plugin_file_name( filename ):
                     file_path = current_dir_level + f'/{ filename }'
-                    if identifier := PluginsRegistry._validate_file_and_get_instance_identifier( file_path ):
-                        print( identifier )
-                        self.plugin_instance_identifiers.append( identifier )
+
+                    if identifier := PluginsRegistry._validate_file( file_path ):
                         return identifier
 
     @staticmethod
@@ -64,24 +70,89 @@ class PluginsRegistry:
             return True
 
     @staticmethod
-    def _validate_file_and_get_instance_identifier(filepath: str) -> str:
+    def _validate_file(filepath: str) -> str:
         """
             Verifies that the structure imposed on a plugin class is met.
             After this, if all imposed criteria are met, returns a dict with the plugin's class identifier,
             and parses the file looking for the necessary attrs of the inner dict (name, description and tags)
             in order to be added on the skills registry
         """
-        with open( filepath, 'r') as plugin_file_class:
-            for line in plugin_file_class.readlines():
-                line = line.strip( '\n' )
+        contains_class: bool = False
+        contains_valid_name_param: bool = False
+        contains_valid_description_param: bool = False
+        contains_valid_tags_param: bool = False
+        class_identifier: str = ''
+
+        with open( filepath, 'r' ) as plugin_file_class:  # Reads the plugin's main class file
+            for line_number, line in enumerate( plugin_file_class.readlines() ):
+                line_number += 1
+                line = line.strip( '\n' )  # Avoid unnecessary line breaks
+                # print( f'LN: { line_number } - { line }')
+
+                if line_number == 3:  # Were should live the name attr
+                    contains_valid_name_param = PluginsRegistry._validate_name_attr( line )
+
+                if line.__contains__( 'description' ) and line_number == 4:  # Were should live the description attr
+                    contains_description_param = True
+                    Logger.success( 'Validated description', 4 )
+
+                if line.__contains__( 'tags' ) and line_number == 5:  # Were should live the tags attr
+                    if line.split( '=' )[ 0 ].rstrip() == 'tags: dict':
+                        contains_valid_tags_param = True
+                        Logger.success( 'Validated tags', 4 )
+
                 if line.__contains__( 'class' ):
-                    class_signature_elements = line.split( ' ' )
-                    print( f'Class signature: { class_signature_elements }' )
-                    class_keyword = class_signature_elements[ 0 ]
-                    class_identifier = class_signature_elements[ 1 ]
-                    if class_identifier.__contains__( '(Skill)' ):  # Checks that the plugin inherits from the ABC Skill
-                        return class_identifier.split( '(' )[ 0 ]
+                    contains_class = True
+                    # Validates the instance identifier
+                    class_identifier = PluginsRegistry._get_instance_identifier( line )
+
+        try:
+            if contains_class and contains_valid_name_param and contains_valid_description_param\
+                    and contains_valid_tags_param:
+                return class_identifier
+            else:
+                raise NotValidPluginFound( class_identifier )
+        except NotValidPluginFound as error:
+            Logger.error( error, 3)
+
+    @staticmethod
+    def _get_instance_identifier(line: str) -> str:
+        """ Finds the line where the class signature lives, and parses it """
+        class_signature_elements = line.split( ' ' )
+        class_keyword = class_signature_elements[ 0 ]  # Should be the class keyword
+        class_identifier = class_signature_elements[ 1 ]  # Should be the class name
+
+        try:
+            # Checks that the plugin inherits from the abstract base class Skill
+            if class_identifier.__contains__( '(Skill)' ):
+                return class_identifier.split( '(' )[ 0 ]
+            else:
+                raise NoInheritsFromSkill(
+                    class_identifier.split('(')[ 0 ].strip(':') + ' class'
+                )
+        except NoInheritsFromSkill as error:
+            Logger.error( error, 3 )
+            return class_identifier  # Returns a str containing the plugins identifier
+            # with the PLUGIN_ERROR label, in order to make it easy the workflow
+            # of send to stdout the INFO about a wrong or corrupt plugin.
+
+    # <<<<<<<<<<<<<< -------------- Validators of plugin's skill class members ---------------- >>>>>>>>>>>>>>>
+    @staticmethod
+    def _validate_name_attr(line: str) -> bool:
+        try:
+            if line.__contains__('name'):
+                try:
+                    name_validator = line.split(" [")[1].strip(']').replace("'", '').split(',')
+                    if len(name_validator) == 2:  # TODO Match it against the len of the availiable langs
+                        Logger.success('Validated name', 4)
+                        return True
                     else:
-                        raise NoInheritsFromSkill( class_identifier.split( '(' )[ 0 ] )
+                        raise SkillNamesListWrongLength(len(name_validator))
+                except SkillNamesListWrongLength as error:
+                    Logger.error(error, 4)
+            else:
+                raise SkillNotContainsNameParameter
+        except SkillNotContainsNameParameter as error:
+            Logger.error(error, 4)
 
 

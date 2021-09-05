@@ -106,9 +106,9 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
-        self.skills.match_skill( ['saludar'] ).play(
-            self, **{ 'username': self.username }
-        )  # Before anything else...
+        # self.skills.match_skill( ['saludar'] ).play(
+        #     self, **{ 'username': self.username }
+        # )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:

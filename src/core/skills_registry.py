@@ -27,11 +27,6 @@ class SkillsRegistry:
         # Here we starts our skill factory
         self.skill_factory = SkillFactory()
 
-        # Add the plugins already "installed"
-        self.plugins_registry = PluginsRegistry()
-        self.plugins_registry.scan_plugins_directory()
-        print(f'Available plugins: {self.plugins_registry.plugin_instance_identifiers}')
-
         # Automatize the process of register every skill on the skill's dict
         for skill, kwargs in rumble_skills_registry.items():
             self.skill_factory.register_object_identifier(
@@ -40,8 +35,13 @@ class SkillsRegistry:
 
         Logger.info('Instances identifiers availiables on the program:')
         [ print( f'\t{ key.title() } -> { instance }' )
-            for key, instance in self.skill_factory.instances.items( )
+            for key, instance in self.skill_factory.instances.items()
         ]
+
+        # Add the plugins already "installed"
+        self.plugins_registry = PluginsRegistry()
+        self.plugins_registry.scan_plugins_directory()
+        print( f'Available plugins: { self.plugins_registry.plugin_instance_identifiers }' )
 
     def match_skill(self, keywords: list[str]) -> Skill:
         """

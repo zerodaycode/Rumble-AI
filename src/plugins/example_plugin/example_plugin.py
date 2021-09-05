@@ -1,16 +1,16 @@
 from ..core import Skill
 
-name = 'Example Plugin'
-description = 'An example of how to desing a basic working plugin for Rumble'
-tags = {
+name: list[str] = [ 'Example Plugin', 'Plugin de ejemplo' ]
+description: str = 'An example of how to desing a basic working plugin for Rumble'
+tags: dict = {
     'tags': {
-        'english': ['example plugin'],
-        'spanish': ['plugin de ejemplo']
+        'english': [ 'example plugin' ],
+        'spanish': [ 'plugin de ejemplo' ]
     }
 }
 
 
-class ExamplePlugin(Skill):
+class ExamplePlugin:
     """
         Just exemplifies how to make a plugin for Rumble
     """
