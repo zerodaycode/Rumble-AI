@@ -1,10 +1,12 @@
 from .plugins_registry import PluginsRegistry
 from .skill import Skill
 from .skill_factory import SkillFactory
+from .plugin_factory import PluginFactory
 
 # Rumble skills modules
 from ..skills.basic.greet import Greet
 from ..skills.basic.open_program import OpenProgram
+from ..skills.basic.close_program import CloseProgram
 from ..skills.basic.shutdown import RumbleShutdown
 from ..skills.info.date import Date
 from ..skills.info.time import Time
@@ -24,13 +26,19 @@ class SkillsRegistry:
         # The query that it's being processed
         self.current_query = None
 
-        # Here we starts our skill factory
+        # Here we starts our skill and plugin factory
         self.skill_factory = SkillFactory()
+        self.plugin_factory = PluginFactory()
 
         # Add the plugins already "installed"
-        self.plugins_registry = PluginsRegistry()
-        self.plugins_registry.scan_plugins_directory()
-        print(f'Available plugins: {self.plugins_registry.plugin_instance_identifiers}')
+        self.plugin_registry = PluginsRegistry()
+
+        # Loading external plugins on the registry
+        for plugin in self.plugin_registry.get_plugins:
+            for skill, kwargs in plugin.items():
+                rumble_skills_registry.update(
+                    { skill: kwargs }
+                )
 
         # Automatize the process of register every skill on the skill's dict
         for skill, kwargs in rumble_skills_registry.items():
@@ -40,7 +48,7 @@ class SkillsRegistry:
 
         Logger.info('Instances identifiers availiables on the program:')
         [ print( f'\t{ key.title() } -> { instance }' )
-            for key, instance in self.skill_factory.instances.items( )
+            for key, instance in self.skill_factory.instances.items()
         ]
 
     def match_skill(self, keywords: list[str]) -> Skill:
@@ -76,14 +84,6 @@ rumble_skills_registry: dict = {
             'spanish': ['apágate']
         }
     },
-    OpenProgram: {
-        'name': ['open', 'abrir'],
-        'description': 'Opens an installed program on the local machine',
-        'tags': {
-            'english': ['open'],
-            'spanish': ['abre', 'mata']
-        },
-    },
     Time: {
         'name': ['hour', 'hora'],
         'description': 'Retrieves info about current time',
@@ -106,6 +106,22 @@ rumble_skills_registry: dict = {
         'tags': {
             'english': ['greet'],
             'spanish': ['saluda', 'saludar'],
+        },
+    },
+    OpenProgram: {
+        'name': ['open', 'abrir'],
+        'description': 'Opens an installed program on the local machine',
+        'tags': {
+            'english': ['open'],
+            'spanish': ['abre', 'ábreme']
+        },
+    },
+    CloseProgram: {
+        'name': ['close', 'cerrar'],
+        'description': 'Closes a current running program',
+        'tags': {
+            'english': ['close'],
+            'spanish': ['cierra', 'ciérrame']
         },
     },
     YouTube: {

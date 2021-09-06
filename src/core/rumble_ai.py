@@ -47,7 +47,8 @@ class RumbleAI:
         ]
         self.extra_data = {
             'username': self.username,
-            'keywords': []
+            'keywords': [],
+            'query': ''
         }
 
     @staticmethod
@@ -87,8 +88,8 @@ class RumbleAI:
             # Just for printing a warning that the program it's listening for audui input
             # listening_th = multiprocessing.Process(target=self.print_listening)
             # listening_th.start()
-
-            r.pause_threshold = 1
+            r.pause_threshold = 0.5
+            r.adjust_for_ambient_noise( source )
             try:
                 query: str = r.recognize_google( r.listen( source ), language = self.language )
             except speech_recognition.UnknownValueError as error:
@@ -106,9 +107,9 @@ class RumbleAI:
 
     def run(self):
         """ The event loop of the APP """
-        self.skills.match_skill( ['saludar'] ).play(
-            self, **{ 'username': self.username }
-        )  # Before anything else...
+        # self.skills.match_skill( ['saludar'] ).play(
+        #     self, **{ 'username': self.username }
+        # )  # Before anything else...
 
         # Permanent listening, and when we get a response, we can go to this one
         while True:
@@ -122,6 +123,7 @@ class RumbleAI:
                     )
                 )
                 self.extra_data.update( { 'keywords': keywords } )
+                self.extra_data.update( { 'query': user_query } )
 
                 if user_query != '':
                     Logger.info( f'{ self.assistant_name.title() } ha escuchado -> ' + user_query )
