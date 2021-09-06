@@ -3,7 +3,7 @@ class NotValidPluginFound(Exception):
      that is not registered on the instances dict"""
 
     def __init__(self, obj_identifier):
-        super().__init__( f'Founded a NOT valid plugin -> { obj_identifier } on the plugins folder <- ' )
+        super().__init__( f'Founded a NOT valid plugin -> { obj_identifier } <- on the plugins folder' )
 
 
 class NoInheritsFromSkill(Exception):
