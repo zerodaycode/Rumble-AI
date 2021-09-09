@@ -1,12 +1,12 @@
 class ObjectFactory:
     """
-    This interface supports the creation of any type of object.
+        This interface supports the creation of any type of object.
 
-    Provides a method to register a Builder based on a key-value pair architechture
-    and a method to create the concrete object instances based on the key.
+        Provides a method to register a Builder based on a key-value pair architechture
+        and a method to create the concrete object instances based on the key.
 
-    Also provide a way to create more concrete implementations of diverse factory that creates
-    concrete instances of more concrete objects
+        Also provide a way to create more concrete implementations of diverse factory that creates
+        concrete instances of more concrete objects
     """
 
     def __init__(self):

@@ -108,8 +108,7 @@ class PluginsRegistry:
                         .strip()\
                         .split( ', ' )
 
-                    # TODO Creates custom exception for each field
-
+                # TODO Creates custom exception for each field
                 if line.__contains__( 'description' ) and line_number == 4:  # Were should live the description attr
                     contains_valid_description_param = True
                     Logger.success( 'Validated description', 4 )
@@ -135,10 +134,12 @@ class PluginsRegistry:
         try:
             if contains_class and contains_valid_name_param and contains_valid_description_param\
                     and contains_valid_tags_param:
+
                 import importlib
                 fmt_path = filepath.replace( '/', '.')[:-3]
                 module = importlib.import_module( fmt_path )
                 class_identifier = getattr( module, class_identifier )
+
                 return {
                     class_identifier: {
                         'name': name_param,
@@ -197,7 +198,7 @@ class PluginsRegistry:
         except SkillNotContainsNameParameter as error:
             Logger.error(error, 4)
 
-# <<<<<<<<<<<<<< -------------- Retrieve data from attrs zone ---------------- >>>>>>>>>>>>>>>
+    # <<<<<<<<<<<<<< -------------- Retrieve data from attrs zone ---------------- >>>>>>>>>>>>>>>
     @staticmethod
     def _retrieve_skill_tags_from_plugin(line: str) -> str:
         line = line.split('[')[1] \
