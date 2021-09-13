@@ -24,7 +24,7 @@ if __name__ == '__main__':
         rumble_configuration = RumbleConfiguration(
             **rumble_initial_config
         )
-        # Stores the initial values on MongoDB
+        # Stores the initial values (a default ones) on MongoDB
         rumble_persistence.configuration.insert_one(
             rumble_initial_config
         )
