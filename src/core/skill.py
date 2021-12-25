@@ -16,7 +16,5 @@ class Skill(metaclass = ABCMeta):
         to be able to access the skill 'talk', which it's directly implemented of the Rumble's
         main class
         :return: Any
-
-
         """
         pass  # abstract methods does not provides an implementation in Python

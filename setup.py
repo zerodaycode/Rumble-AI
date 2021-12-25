@@ -5,7 +5,6 @@ print("Syncing Python's PIP dependencies")
 
 ''' This little module just takes care about autoconfigure this project before it starts to run '''
 
-
 def sync_dependencies():
     dependencies = [
         "SpeechRecognition",  # For Voice commands
@@ -17,7 +16,9 @@ def sync_dependencies():
         "pyaudio",  # For working with audio
         "pyautogui",  # For performing some GUI operation
         "pyttsx3",  # For Voice Interaction
-        'pywhatkit'  # For WhatsApp interaction
+        'pywhatkit',  # For WhatsApp interaction
+        'pymongo',  # Mongo DB Python's impl
+        # 'pocketsphinx'  # Voice to text audio engine
     ]
 
     '''
@@ -30,9 +31,12 @@ def sync_dependencies():
 
     pip_packages = [
         f'pip install {package}' if package != "pyaudio"
-        else "pip install .whl\\" + sorted(os.listdir(".whl"), key = lambda x: not x.__contains__("cp39"))[0]
+        else "pip install .whl\\" + sorted(os.listdir(".whl"), key = lambda x: not x.__contains__("cp310"))[0]
         for package in dependencies
     ]
 
     for package in pip_packages:
         subprocess.Popen(package)
+
+
+sync_dependencies()
