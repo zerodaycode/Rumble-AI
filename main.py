@@ -42,6 +42,10 @@ if __name__ == '__main__':
     rumble_configuration = RumbleConfiguration(
         **rumble_initial_config
     )
+
+    # Developer mode. Asks for another input device that is not the default one
+    mic_device = rumble_configuration.mic_setup()
+    rumble_configuration.mic_input_device = mic_device
         # # Stores the initial values (a default ones) on MongoDB
         # rumble_persistence.configuration.insert_one(
         #     rumble_initial_config

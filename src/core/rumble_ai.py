@@ -28,6 +28,9 @@ class RumbleAI:
     def __init__(self, config):
         # Rumble set-up
         self.config = config
+        # The speech recognition engine
+        self.sr = speech_recognition.Recognizer()
+        self.config.configure_speech_recognizer_engine( self.sr )
         # The text to speech engine
         self.engine = config.tts_engine()
         # AI skills
@@ -51,28 +54,29 @@ class RumbleAI:
 
     def listen(self):
         """ The Rumble capacity to listen. It parses the audio input to perform an AI based action """
-        r = speech_recognition.Recognizer()
         query = ""
 
         with speech_recognition.Microphone( device_index = self.config.mic_input_device ) as source:
-            # Just for printing a warning that the program it's listening forinput
-            # listening_th = multiprocessing.Process(target=self.print_listening)
+            # To debug where the microphone it's concurrently really ready for voice input
             self.listening = True
             listening_th = threading.Thread( target=self.print_listening )
             listening_th.start()
-            
-            # TODO move the configuration of the SR to the config class
-            r.pause_threshold = 0.5
-            r.adjust_for_ambient_noise( source )
-            r.energy_threshold = 2000
+            self.sr.adjust_for_ambient_noise( source )
+
             try:
                 print('Listening...')
                 init_time = int(round(ti.time() * 1000))
-                query: str = r.recognize_google( r.listen( source ), language = self.config.language )
+                query: str = self.sr.recognize_google( self.sr.listen( source ), language = self.config.language )
                 end_time = int(round(ti.time() * 1000))
                 Logger.info( f'It tooks { (end_time - init_time) }ms listening until we got an audio')
             except speech_recognition.UnknownValueError as error:
                 Logger.error( f'It has been imposible to understand the input audio.\n{ error }' )
+            except KeyboardInterrupt:
+                # Program stopped by Ctrl + C or IDE's stop button
+                print()
+                self.listening = False
+                Logger.warning( f'Program manually stopped by the user: { self.config.username }' )
+                sys.exit()
             
             self.listening = False
             listening_th.join()

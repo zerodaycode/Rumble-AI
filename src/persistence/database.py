@@ -3,6 +3,9 @@
 
 class RumblePersistence:
     def __init__(self):
+        """
+            Rumble persistence desing model it's under revision
+        """
         pass
 #         # Creating a pymongo client
 #         self.mongo_client = MongoClient('localhost', 27017)

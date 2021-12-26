@@ -1,4 +1,5 @@
 import pyttsx3
+import speech_recognition
 
 from src.persistence import database
 
@@ -19,6 +20,7 @@ class RumbleConfiguration:
         self.word_filter = configuration['word_filter']
 
     def to_database(self):
+        """ Serializes into a MongoDB collection the configuration values """
         return {
             'assistant_name': self.assistant_name,
             'username': self.username,
@@ -27,10 +29,15 @@ class RumbleConfiguration:
             'word_filter': self.word_filter
         }
 
+    def configure_speech_recognizer_engine(self, sr_engine):
+        """ Configures the details about how the engine works with the hardware """
+        sr_engine.pause_threshold = 0.5
+        sr_engine.energy_threshold = 5000
+
     # TODO Change behaviour of non instance dependent methods to @staticmethods
 
     def tts_engine(self):
-        """ Creates a new tts engine, and sets it's initial configuration"""
+        """ Creates a new tts engine, and sets it's initial configuration """
         tts_engine = pyttsx3.init()
 
         voices = tts_engine.getProperty( 'voices' )
@@ -44,6 +51,7 @@ class RumbleConfiguration:
             1: "en-EN",
             2: "es-ES"
         }
+        # TODO This value should be passed in from the GUI
         return sr_lang.get( self.id_language, 1 )
 
     def mic_setup(self):
@@ -51,24 +59,15 @@ class RumbleConfiguration:
         # TODO Traducción de los outputs
         availiable_options = 0
         for index, name in enumerate( speech_recognition.Microphone.list_microphone_names() ):
-            print( f'Dispositivo de audio: "{ name }", identificado con el ID = { index }.' )
+            print( f'Audio device: "{ name }", identified with ID = { index }.' )
             availiable_options += 1
 
-            while True:
-                mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
-                try:
-                    mic_id_request = int(mic_id_request)
-                    if 0 <= mic_id_request <= availiable_options:
-                        self.mic_input_device = mic_id_request
-                        break
-                except ValueError:
-                    print('Por favor, introduce un número válido')
-
-    @staticmethod
-    def print_listening():
-        """ Helper that prints a message while the speech recognition it's trying to parse an audio input"""
-        counter = 1
         while True:
-            Logger.info(f'Escuchando hace {counter} s.')
-            counter += 1
-            ti.sleep(1)
+            mic_id_request = input('\nPor favor, introduce uno de los números de alguno de los dispositivo\n')
+            try:
+                mic_id_request = int(mic_id_request)
+                if 0 <= mic_id_request <= availiable_options:
+                    self.mic_input_device = mic_id_request
+                    break
+            except ValueError:
+                print('Por favor, introduce un número válido')

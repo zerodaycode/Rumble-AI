@@ -26,7 +26,7 @@ class OpenProgram(Skill):
         query = kwargs[ "query" ]
 
         if 'navegador' in query or 'firefox' in query:
-            os.system('start firefox')
+            system('start firefox')
         elif "lol" in query or "league of legends" in query:
             rumble.talk('Ea, vamos a fedear un poco!')
             subprocess.call('C:\\Riot Games\\League of Legends\\LeagueClient.exe')
