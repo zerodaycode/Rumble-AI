@@ -1,11 +1,13 @@
+''' This little module just takes care about autoconfigure this project before it starts to run '''
+
 import subprocess
+import sys
 import os
 
 print("Syncing Python's PIP dependencies")
 
-''' This little module just takes care about autoconfigure this project before it starts to run '''
-
 def sync_dependencies():
+    ''' Handles the dependencies install '''
     dependencies = [
         "SpeechRecognition",  # For Voice commands
         "clipboard",  # For working with the clipboard
@@ -17,21 +19,22 @@ def sync_dependencies():
         "pyautogui",  # For performing some GUI operation
         "pyttsx3",  # For Voice Interaction
         'pywhatkit',  # For WhatsApp interaction
-        'pymongo',  # Mongo DB Python's impl
+        # 'pymongo',  # Mongo DB Python's impl
         # 'pocketsphinx'  # Voice to text audio engine
     ]
 
     '''
-        Install the packages listed on dependencies but not pyaudio. Pyaudio for Python > 3.6 it has to be manually builded,
-        or installed vía the precompiled .whl file. I've included both for 3.9 version and 3.10, so it will takes the one for the
-        correct Python version nowadays.
-    
-        The lambda expression orders the list taking 39(3.9) as a lower version than 310 (3.10) without manually changing anything.
+        Install the packages listed on dependencies but not pyaudio. 
+        Pyaudio for Python > 3.6 it has to be manually builded, or installed vía the precompiled .whl file. 
+        
+        We've included both for 3.10 and 3.11 versions on the ./.whl directory.
     '''
-
+    python_version = sys.version.split(' ', maxsplit=1)[0].replace('.', '')
+    print(python_version)
+    return
     pip_packages = [
         f'pip install {package}' if package != "pyaudio"
-        else "pip install .whl\\" + sorted(os.listdir(".whl"), key = lambda x: not x.__contains__("cp310"))[0]
+            else "pip install .whl\\" + sorted(os.listdir(".whl"), key = lambda x: x in python_version)[0]
         for package in dependencies
     ]
 
