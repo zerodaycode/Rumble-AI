@@ -19,6 +19,7 @@ class RumbleConfiguration:
         # Stores the words that should be filtered to parse the user voice input
         self.word_filter = configuration['word_filter']
 
+    # DEPRECATED: Mongo usage is deprecated
     def to_database(self):
         """ Serializes into a MongoDB collection the configuration values """
         return {
@@ -40,8 +41,8 @@ class RumbleConfiguration:
         """ Creates a new tts engine, and sets it's initial configuration """
         tts_engine = pyttsx3.init()
 
-        voices = tts_engine.getProperty( 'voices' )
-        tts_engine.setProperty( 'voice', voices[0].id )
+        voices = tts_engine.getProperty('voices')
+        tts_engine.setProperty('voice', voices[0].id)
 
         return tts_engine
 
@@ -52,14 +53,14 @@ class RumbleConfiguration:
             2: "es-ES"
         }
         # TODO This value should be passed in from the GUI
-        return sr_lang.get( self.id_language, 1 )
+        return sr_lang.get(self.id_language, 1)
 
     def mic_setup(self):
         """ Sets the correct primary audio input device """
         # TODO Traducción de los outputs
         availiable_options = 0
-        for index, name in enumerate( speech_recognition.Microphone.list_microphone_names() ):
-            print( f'Audio device: "{ name }", identified with ID = { index }.' )
+        for index, name in enumerate(speech_recognition.Microphone.list_microphone_names()):
+            print(f'Audio device: "{name}", identified with ID = {index}.') # Logger
             availiable_options += 1
 
         while True:

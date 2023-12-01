@@ -6,6 +6,7 @@ otros.py
 __pycache__/
 __venv__/
 /venv/
+/.venv/
 *.jpg
 .idea/
 /src/core/pywhatkit_dbs.txt

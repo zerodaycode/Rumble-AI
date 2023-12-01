@@ -47,9 +47,8 @@ class SkillsRegistry:
             )
 
         Logger.info('Instances identifiers availiables on the program:')
-        [ print( f'\t{ key.title() } -> { instance }' )
-            for key, instance in self.skill_factory.instances.items()
-        ]
+        for key, instance in self.skill_factory.instances.items():
+            print(f'\t{ key.title() } -> { instance }')
 
     def match_skill(self, keywords: list[str]) -> Skill:
         """
@@ -75,7 +74,8 @@ class SkillsRegistry:
 
 # A list with all the Rumble's availiable skills.
 rumble_skills_registry: dict = {
-
+    # TODO when the skills are loaded, just redo this dic to hold only
+    # the necessary data for the skill to work in that language
     RumbleShutdown: {
         'name': ['shutdown', 'apagar'],
         'description': 'Shutdowns Rumble',
@@ -133,5 +133,4 @@ rumble_skills_registry: dict = {
             'spanish': ['youtube']
         }
     },
-
 }
