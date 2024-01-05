@@ -10,6 +10,7 @@ Be welcome to the big, and NOT only one but not as other ones open source, Virtu
 [![GitHub Issues](https://img.shields.io/github/issues/zerodaycode/Zork.svg)](https://github.com/zerodaycode/Rumble-AI/issues)</br>
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/zerodaycode/Zork.svg)](https://github.com/zerodaycode/Rumble-AI/pulls)</br>
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+</div>
 
 # 📝 Table of Contents
 
