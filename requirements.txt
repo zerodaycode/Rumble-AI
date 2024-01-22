@@ -14,7 +14,7 @@ MarkupSafe==2.1.3
 MouseInfo==0.1.3
 newsapi==0.1.1
 newsapi-python==0.2.7
-Pillow==10.1.0
+Pillow==10.2.0
 psutil==5.9.6
 PyAudio==0.2.14
 PyAutoGUI==0.9.54
